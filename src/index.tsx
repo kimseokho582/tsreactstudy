@@ -12,6 +12,10 @@ const GlobalStyle = createGlobalStyle`
     list-style: none;
     padding-left: 0px;
   }
+  a{
+    text-decoration:none;
+    color:inherit;
+  }
 `;
 
 ReactDOM.render(
