@@ -51,6 +51,8 @@ const Item = styled.li`
 `;
 
 const Search = styled.span`
+  margin-right: 250px;
+  position: relative;
   color: white;
   display: flex;
   svg {
@@ -70,14 +72,27 @@ const Circle = styled(motion.span)`
   margin: auto;
 `;
 
-const Input = styled(motion.input)``;
+const Input = styled(motion.input)`
+  transform-origin: right center;
+  position: absolute;
+  left: -170px;
+  background-color: transparent;
+  color: white;
+  right: 0px;
+  top: -3px;
+  padding: 5px 10px;
+  font-size: 16px;
+  padding-left: 35px;
+  z-index: -1;
+  border: 1px solid ${(props) => props.theme.white.lighter};
+`;
 
 const logoVariants = {
   normal: {
     fillOpacity: 1,
   },
   active: {
-    fillOpacity: 0.5,
+    fillOpacity: 0.3,
   },
 };
 
@@ -85,7 +100,11 @@ function Header() {
   const [searchOpen, setsearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
-  console.log(homeMatch, tvMatch);
+  const toggleSearch = () => {
+    document.getElementById("inputId")?.focus();
+    setsearchOpen(!searchOpen);
+  };
+
   return (
     <Nav>
       <Col>
@@ -116,8 +135,11 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search onClick={() => setsearchOpen(true)}>
-          <svg
+        <Search>
+          <motion.svg
+            onClick={toggleSearch}
+            animate={{ x: searchOpen ? -165 : 0 }}
+            transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -127,8 +149,15 @@ function Header() {
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clipRule="evenodd"
             ></path>
-          </svg>
-          <Input placeholder="Search for movie or tv show..."></Input>
+          </motion.svg>
+          <Input
+            id="inputId"
+            autoFocus={true}
+            transition={{ type: "linear" }}
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            initial={{ scaleX: 0 }}
+            placeholder="Search for movie or tv show..."
+          ></Input>
         </Search>
       </Col>
     </Nav>
