@@ -52,6 +52,7 @@ const Item = styled.li`
 
 const Search = styled.span`
   color: white;
+  display: flex;
   svg {
     height: 25px;
   }
