@@ -8,6 +8,8 @@ const GlobalStyle = createGlobalStyle`
   body{
     padding:0;
     margin:0;
+    color:${(props) => props.theme.white.darker};
+    background-color:black;
   }
   ul{
     list-style: none;
