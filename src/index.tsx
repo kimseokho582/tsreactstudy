@@ -22,6 +22,9 @@ const GlobalStyle = createGlobalStyle`
   input:focus{
     outline:none;
   }
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
 `;
 
 const client = new QueryClient();

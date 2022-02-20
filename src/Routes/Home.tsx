@@ -50,12 +50,17 @@ const Row = styled(motion.div)`
   width: 100%;
   position: absolute;
 `;
-const Box = styled(motion.div)`
+const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
+  background-image: url(${(props) => props.bgPhoto});
+  background-size: cover;
+  background-position: center center;
   height: 200px;
   color: black;
   font-size: 60px;
 `;
+
+const offset = 6;
 
 function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -76,8 +81,17 @@ function Home() {
   };
 
   const [index, setIndex] = useState(0);
-  const increaseIndex = () => setIndex((prev) => prev + 1);
-  console.log(data, isLoading);
+  const [leaving, setLeaving] = useState(false);
+  const increaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      setLeaving(true);
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+  const toggleLeaving = () => setLeaving(!leaving);
   return (
     <Wrapper>
       {isLoading ? (
@@ -92,18 +106,24 @@ function Home() {
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <Slider>
-            <AnimatePresence>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
                 key={index}
                 initial="hidden"
                 animate="visible"
-                transition={{ type: "tween", duration: 10 }}
+                transition={{ type: "tween", duration: 1 }}
                 exit="exit"
               >
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Box key={i}>{i}</Box>
-                ))}
+                {data?.results
+                  .slice(1)
+                  .slice(offset * index, offset * index + offset)
+                  .map((movie) => (
+                    <Box
+                      key={movie.id}
+                      bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                    ></Box>
+                  ))}
               </Row>
             </AnimatePresence>
           </Slider>
