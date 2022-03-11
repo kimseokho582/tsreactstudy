@@ -87,6 +87,7 @@ const Overlay = styled(motion.div)`
   top: 0;
   width: 100%;
   height: 100%;
+  border-radius: 1;
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
 `;
@@ -98,6 +99,9 @@ const BigMovie = styled(motion.div)`
   left: 0;
   right: 0;
   margin: 0 auto;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: ${(props) => props.theme.black.lighter};
 `;
 
 const BoxVariants = {
@@ -124,6 +128,28 @@ const infoVariants = {
     },
   },
 };
+
+const BigCover = styled.div`
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
+`;
+
+const BigTitle = styled.h2`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 10px;
+  font-size: 30px;
+  position: relative;
+  top: -50px;
+`;
+
+const BigOverview = styled.p`
+  padding: 20px;
+  position: relative;
+  top: -50px;
+  color: ${(props) => props.theme.white.lighter};
+`;
 
 const rowVariants = {
   hidden: {
@@ -165,6 +191,11 @@ function Home() {
   };
 
   const onOverlayClick = () => navigate("/");
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => movie.id + "" === bigMovieMatch.params.movieId
+    );
   return (
     <Wrapper>
       {isLoading ? (
@@ -222,7 +253,20 @@ function Home() {
                   style={{ top: scrollY.get() + 100 }}
                   layoutId={bigMovieMatch.params.movieId}
                 >
-                  {bigMovieMatch.params.movieId}
+                  {clickedMovie && (
+                    <>
+                      <BigCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            "w500"
+                          )}`,
+                        }}
+                      ></BigCover>
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                    </>
+                  )}
                 </BigMovie>
               </>
             ) : null}
